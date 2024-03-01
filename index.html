@@ -3,47 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-time Chat</title>
+  <title>UDay Chat</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    #chatBox {
-      height: 300px;
-      overflow-y: scroll;
+    /* Chat box styling */
+    .chat-box {
+      width: 300px;
+      height: 400px;
       border: 1px solid #ccc;
-      padding: 10px;
+      overflow-y: scroll;
     }
 
+    /* Chat message styling */
     .message {
-      margin-bottom: 10px;
-    }
-
-    .sender {
-      font-weight: bold;
-    }
-
-    .timestamp {
-      color: #999;
-      font-size: 12px;
-    }
-
-    .status {
-      color: #007bff;
-      font-size: 12px;
-    }
-
-    #messageInput {
-      width: calc(100% - 70px);
-      padding: 5px;
-      margin-right: 10px;
-    }
-
-    button {
       padding: 5px 10px;
+      margin: 5px;
+      border-radius: 10px;
+      background-color: #f2f2f2;
+    }
+
+    /* Input field styling */
+    .input-field {
+      width: calc(100% - 22px);
+      margin: 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Button styling */
+    .send-btn {
+      width: 50px;
+      padding: 5px;
+      margin: 10px;
       border: none;
       border-radius: 5px;
       background-color: #007bff;
@@ -51,43 +42,33 @@
       cursor: pointer;
     }
 
-    button:hover {
+    /* Button hover effect */
+    .send-btn:hover {
       background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <div id="chatBox"></div>
-  <input type="text" id="messageInput" placeholder="Type a message...">
-  <button onclick="sendMessage()">Send</button>
+  <div class="chat-box" id="chatBox">
+    <!-- Chat messages will be displayed here -->
+  </div>
+  <input type="text" class="input-field" id="messageInput" placeholder="Type a message...">
+  <button class="send-btn" onclick="sendMessage()">Send</button>
 
-  <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
-
-    socket.on('chat message', (data) => {
-      displayMessage(data);
-    });
-
+    // Function to send message
     function sendMessage() {
-      const messageInput = document.getElementById("messageInput");
-      const message = messageInput.value.trim();
-      if (message !== "") {
-        const data = {
-          message: message,
-          sender: 'You'
-        };
-        socket.emit('chat message', data);
+      var messageInput = document.getElementById("messageInput");
+      var message = messageInput.value;
+      if (message.trim() !== "") {
+        var chatBox = document.getElementById("chatBox");
+        var messageElement = document.createElement("div");
+        messageElement.classList.add("message");
+        messageElement.textContent = message;
+        chatBox.appendChild(messageElement);
         messageInput.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
       }
-    }
-
-    function displayMessage(data) {
-      const chatBox = document.getElementById("chatBox");
-      const messageElement = document.createElement("div");
-      messageElement.classList.add('message');
-      messageElement.innerHTML = `<span class="sender">${data.sender}</span>: ${data.message} <span class="timestamp">${data.timestamp}</span> <span class="status">${data.status}</span>`;
-      chatBox.appendChild(messageElement);
     }
   </script>
 </body>
